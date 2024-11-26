@@ -1,108 +1,113 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { LogIn, Menu, X } from 'lucide-react'
-import { Archivo_Black } from 'next/font/google'
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { LogIn, LogOut, Menu, X } from "lucide-react";
+import { Archivo_Black } from "next/font/google";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
-const archivo = Archivo_Black({ 
-  weight: '400',
-  subsets: ['latin'],
-})
+const archivo = Archivo_Black({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 const Navigation = () => {
-  const [nav, setNav] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  
+  const [nav, setNav] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { user, error, isLoading } = useUser();
+
   const links = [
     { id: 1, link: "/", text: "home" },
     { id: 2, link: "/about", text: "my portfolio" },
     { id: 3, link: "/conditions-treated", text: "recommendations" },
     { id: 4, link: "/contact", text: "contact" },
-  ]
+  ];
 
   useEffect(() => {
     // Check if dark mode is enabled
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    setIsDarkMode(darkModeMediaQuery.matches)
+    const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDarkMode(darkModeMediaQuery.matches);
 
     // Listen for changes in color scheme
-    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches)
-    darkModeMediaQuery.addEventListener('change', handleChange)
+    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    darkModeMediaQuery.addEventListener("change", handleChange);
 
     // Load TradingView widget
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js'
-    script.async = true
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+    script.async = true;
     script.innerHTML = JSON.stringify({
-      "symbols": [
+      symbols: [
         {
-          "proName": "FOREXCOM:SPXUSD",
-          "title": "S&P 500"
+          proName: "FOREXCOM:SPXUSD",
+          title: "S&P 500",
         },
         {
-          "proName": "FOREXCOM:NSXUSD",
-          "title": "Nasdaq 100"
+          proName: "FOREXCOM:NSXUSD",
+          title: "Nasdaq 100",
         },
         {
-          "proName": "FX_IDC:EURUSD",
-          "title": "EUR/USD"
+          proName: "FX_IDC:EURUSD",
+          title: "EUR/USD",
         },
         {
-          "proName": "BITSTAMP:BTCUSD",
-          "title": "Bitcoin"
+          proName: "BITSTAMP:BTCUSD",
+          title: "Bitcoin",
         },
         {
-          "proName": "NASDAQ:NVDA",
-          "title": "Nvidia"
+          proName: "NASDAQ:NVDA",
+          title: "Nvidia",
         },
         {
-            "proName": "NASDAQ:MSFT",
-            "title": "Microsoft"
+          proName: "NASDAQ:MSFT",
+          title: "Microsoft",
         },
         {
-            "proName": "NYSE:MA",
-            "title": "Mastercard"
+          proName: "NYSE:MA",
+          title: "Mastercard",
         },
-
+        {
+          proName: "NASDAQ:AAPL",
+          title: "Apple",
+        },
+        {
+          proName: "NASDAQ:META",
+          title: "Meta",
+        },
+        {
+          proName: "NASDAQ:TSLA",
+          title: "Tesla",
+        },
+        {
+          proName: "NASDAQ:GOOGL",
+          title: "Google",
+        },
       ],
-      "showSymbolLogo": true,
-      "isTransparent": false,
-      "displayMode": "adaptive",
-      "colorTheme": isDarkMode ? "dark" : "light",
-      "locale": "en"
-    })
-    document.getElementById('tradingview-widget')?.appendChild(script)
+      showSymbolLogo: true,
+      isTransparent: false,
+      displayMode: "compact",
+      colorTheme: isDarkMode ? "dark" : "light",
+      locale: "en",
+    });
+    document.getElementById("tradingview-widget")?.appendChild(script);
 
     return () => {
-      darkModeMediaQuery.removeEventListener('change', handleChange)
-    }
-  }, [isDarkMode])
+      darkModeMediaQuery.removeEventListener("change", handleChange);
+    };
+  }, [isDarkMode]);
 
   return (
     <div className="fixed top-0 left-0 w-full z-50">
       <div className="flex justify-between items-center w-full h-20 px-4 text-white bg-[#081d2b] shadow-md">
         <div className="flex-1">
           <Link href="/" className="flex items-center">
-            <Image
-              src="/Stockwavelogo.png"
-              alt="Logo"
-              width={60}
-              height={60}
-              className="mr-2"
-            />
-            <Image
-              src="/Stockwavetextwhite.png"
-              alt="Logo"
-              width={200}
-              height={60}
-              className="mr-2"
-            />
+            <Image src="/Stockwavelogo.png" alt="Logo" width={60} height={60} className="mr-2" />
+            <Image src="/Stockwavetextwhite.png" alt="Logo" width={200} height={60} className="mr-2" />
           </Link>
         </div>
-    
+
         <ul className="hidden md:flex space-x-6 flex-1 justify-center">
           {links.map(({ id, link, text }) => (
             <li
@@ -113,12 +118,30 @@ const Navigation = () => {
             </li>
           ))}
         </ul>
-    
-        <div className="flex items-center flex-1 justify-end">
-          <button className="bg-[#fed001] text-[#081d2b] px-6 py-2 rounded-full hover:bg-white transition duration-300 flex items-center space-x-2 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
-            <LogIn size={20} />
-            <span>Login</span>
-          </button>
+
+        <div className="flex items-center flex-1 justify-end space-x-4">
+          {isLoading ? (
+            <div className="text-white">Loading...</div>
+          ) : error ? (
+            <div className="text-red-500">Error: {error.message}</div>
+          ) : user ? (
+            <>
+              <div className="text-white">Welcome, {user.name || user.email}</div>
+              <Link href="/api/auth/logout">
+                <button className="bg-[#fed001] text-[#081d2b] px-6 py-2 rounded-full hover:bg-white transition duration-300 flex items-center space-x-2 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
+                  <LogOut size={20} />
+                  <span>Logout</span>
+                </button>
+              </Link>
+            </>
+          ) : (
+            <Link href="/api/auth/login">
+              <button className="bg-[#fed001] text-[#081d2b] px-6 py-2 rounded-full hover:bg-white transition duration-300 flex items-center space-x-2 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
+                <LogIn size={20} />
+                <span>Login</span>
+              </button>
+            </Link>
+          )}
           <button
             onClick={() => setNav(!nav)}
             className="ml-4 p-2 rounded-full hover:bg-[#fed001] hover:text-[#081d2b] transition-colors duration-200 md:hidden"
@@ -126,7 +149,7 @@ const Navigation = () => {
             {nav ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-    
+
         {nav && (
           <div className="fixed inset-0 bg-[#081d2b] bg-opacity-95 z-50 md:hidden">
             <div className="flex flex-col h-full w-full p-6">
@@ -156,20 +179,43 @@ const Navigation = () => {
                   </li>
                 ))}
               </ul>
-              <button className="bg-[#fed001] text-[#081d2b] px-6 py-3 rounded-full hover:bg-white transition duration-300 flex items-center space-x-2 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 mt-8 justify-center">
-                <LogIn size={20} />
-                <span>Login</span>
-              </button>
+              <div className="mt-6">
+                {isLoading ? (
+                  <div className="text-white">Loading...</div>
+                ) : error ? (
+                  <div className="text-red-500">Error: {error.message}</div>
+                ) : user ? (
+                  <>
+                    <div className="text-white mb-4">Welcome, {user.name || user.email}</div>
+                    <Link href="/api/auth/logout">
+                      <button className="w-full bg-[#fed001] text-[#081d2b] px-6 py-2 rounded-full hover:bg-white transition duration-300 flex items-center justify-center space-x-2 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <LogOut size={20} />
+                        <span>Logout</span>
+                      </button>
+                    </Link>
+                  </>
+                ) : (
+                  <Link href="/api/auth/login">
+                    <button className="w-full bg-[#fed001] text-[#081d2b] px-6 py-2 rounded-full hover:bg-white transition duration-300 flex items-center justify-center space-x-2 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105">
+                      <LogIn size={20} />
+                      <span>Login</span>
+                    </button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
       </div>
-      <div id="tradingview-widget" className="tradingview-widget-container">
-        <div className="tradingview-widget-container__widget"></div>
+      <div className="relative overflow-hidden">
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-white z-10"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-white z-10"></div>
+        <div id="tradingview-widget" className="tradingview-widget-container">
+          <div className="tradingview-widget-container__widget"></div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navigation
-
+export default Navigation;

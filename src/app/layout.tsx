@@ -1,5 +1,6 @@
 import "./globals.css";
-import Navigation from "../../components/navigation";
+import NavigationWrapper from "../../components/navigation-wrapper";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 export default function RootLayout({
   children,
@@ -8,12 +9,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Navigation />
-        <main className="pt-20">
-          {children}
-        </main>
-      </body>
+      <UserProvider>
+        <body>
+          <NavigationWrapper />
+          <main>{children}</main>
+        </body>
+      </UserProvider>
     </html>
   );
 }
